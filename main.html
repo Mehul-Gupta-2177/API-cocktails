@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+    <title>Cocktail Searcher</title>
+
+    <script language="javascript">
+
+            window.onload = function() {
+            btn = document.getElementById("button1");
+    btn.onclick = function() {
+
+        request = new XMLHttpRequest();
+        console.log("1 - request object created");
+        var url = "https://cors-anywhere.herokuapp.com/" + "http://www.thecocktaildb.com/api/json/v1/1/search.php?i=" + document.form1.Liqour.value
+        console.log(url);
+        request.open("GET", url , true);
+        console.log("2 - opened request file");
+
+        request.onreadystatechange = function() 
+        {
+				console.log("3 - readystatechange event fired.");
+ 
+				if (request.readyState == 4 && request.status == 200) {
+
+					// Step 5: wait for done + success
+					console.log("5 - response received");
+					result = request.responseText;
+					liqour = JSON.parse(result);		
+					document.getElementById("result").innerHTML = liqour.ingredients[0].strDescription; 
+					
+				}
+				else if (request.readyState == 4 && request.status != 200) {
+
+					document.getElementById("result").innerHTML = "Something is wrong!  Check the logs to see where this went off the rails";
+
+				}
+
+				else if (request.readyState == 3) {
+
+					document.getElementById("result").innerHTML = "Too soon!  Try again";
+
+				}
+
+			}
+		// Step 4: fire off the HTTP request
+			request.send();
+			console.log("4 - Request sent");
+		}
+
+
+    btn = document.getElementById("button2");
+    btn.onclick = function() {
+        var url = "https://cors-anywhere.herokuapp.com/" + "http://www.thecocktaildb.com/api/json/v1/1/search.php?i=" + document.form2.Liqour2.value
+        res =  fetch(url)
+        .then (res => res.text())
+        .then (data => 
+        {
+            data = JSON.parse(data)
+            data = data.ingredients[0].strDescription; 
+            document.getElementById("result2").innerHTML = data 
+        })
+            .catch (error => console.log(error))
+
+
+    }
+        
+        }
+    </script>
+
+</head>
+<body>
+    <p> describe the API you selected and what it does: This is a liqour description API: Give any liqour type name and get a good description of it.
+        <br>
+        cite the website where you found it: https://www.thecocktaildb.com/api.php
+        <br>
+         describe the options you used for the API request: Ajax and Fetch API optiions were used
+         <br>
+        give two applications where this API would be helpful: This could be helpful in the bar industry to teach new bartenders what all liqours 
+        are about and also to educate people about differrent liqours and countries as well as description of the liqour if they are interested</p>
+        <form name = 'form1' method ="get"  action="#" >
+        <label for="Liqour">Type of Liqour: </label><br>
+        <select id="Liqour" name="Liqour">
+            <option value="vodka">vodka</option>
+            <option value="rum">rum</option>
+            <option value="tequila">tequila</option>
+            <option value="whiskey">whiskey</option>
+          </select>
+        <br>
+        <input type = "button" name ="button1" value = "Request" id = "button1">
+        <br>
+        <div id= "result">&nbsp;</div>
+        </form>
+
+        <form name = 'form2' method ="get"  action="#" >
+            <label for="Liqour2">Type of Liqour: </label><br>
+            <select id="Liqour2" name="Liqour2">
+                <option value="vodka">vodka</option>
+                <option value="rum">rum</option>
+                <option value="tequila">tequila</option>
+                <option value="whiskey">whiskey</option>
+              </select>
+            <br>
+            <input type = "button" name ="button2" value = "Request" id = "button2">
+            <br>
+            <div id= "result2">&nbsp;</div>
+            </form>
+</body>
+</html>
